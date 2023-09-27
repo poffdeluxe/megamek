@@ -15,16 +15,31 @@
  */
 package megamek;
 
+import megamek.client.Client;
+import megamek.client.bot.princess.BehaviorSettings;
+import megamek.client.bot.princess.Princess;
+import megamek.client.bot.ui.swing.BotGUI;
+import megamek.client.generator.RandomNameGenerator;
+import megamek.client.ui.Messages;
 import megamek.client.ui.preferences.SuitePreferences;
 import megamek.client.ui.swing.ButtonOrderPreferences;
 import megamek.client.ui.swing.MegaMekGUI;
+import megamek.client.ui.swing.tooltip.PilotToolTip;
+import megamek.common.MechSummaryCache;
+import megamek.common.Entity;
+import megamek.common.MechFileParser;
+import megamek.common.MechSummary;
 import megamek.common.annotations.Nullable;
 import megamek.common.commandline.AbstractCommandLineParser;
 import megamek.common.commandline.ClientServerCommandLineParser;
 import megamek.common.commandline.MegaMekCommandLineFlag;
 import megamek.common.commandline.MegaMekCommandLineParser;
+import megamek.common.enums.Gender;
+import megamek.common.loaders.EntityLoadingException;
 import megamek.common.preference.PreferenceManager;
+import megamek.common.util.AddBotUtil;
 import megamek.server.DedicatedServer;
+import megamek.server.Server;
 import megamek.utilities.RATGeneratorEditor;
 import org.apache.logging.log4j.LogManager;
 
@@ -78,15 +93,73 @@ public class MegaMek {
             parser.parse();
 
             String[] restArgs = parser.getRestArgs();
-
-            if (parser.dedicatedServer()) {
-                startDedicatedServer(restArgs);
-                return;
-            }
+            startDedicatedServer(restArgs);
 
             getMMPreferences().loadFromFile(MMConstants.MM_PREFERENCES_FILE);
-            initializeSuiteGraphicalSetups(MMConstants.PROJECT_NAME);
 
+            //String playerName = Server.validatePlayerName("Poff");
+            //String serverAddress = Server.validateServerAddress("localhost");
+            //int port = Server.validatePort(2346);
+
+            //Client client = new Client(playerName, serverAddress, port);
+            //client.connect();
+
+            Princess botClient = Princess.createPrincess("JustinXiang", "localhost",
+                2346, new BehaviorSettings());
+            botClient.connect();
+
+            MechSummaryCache mscInstance = MechSummaryCache.getInstance();
+            MechSummary ms = mscInstance.getMech("Centurion CN9-YLW 'Yen Lo Wang'");
+            try {
+                Entity e = new MechFileParser(ms.getSourceFile(), ms.getEntryName()).getEntity();
+                //autoSetSkillsAndName(e, client.getLocalPlayer());
+
+                botClient.getSkillGenerator().setRandomSkills(e, false);
+                e.getCrew().setGunnery(4, 0);
+                e.getCrew().setGunneryL(4, 0);
+                e.getCrew().setGunneryM(4, 0);
+                e.getCrew().setGunneryB(4, 0);
+                e.getCrew().setPiloting(5, 0);
+                e.getCrew().setGender(Gender.MALE, 0);
+                e.getCrew().setName("Justin Xiang", 0);
+                e.setOwner(botClient.getLocalPlayer());
+
+                botClient.sendAddEntity(e);
+            } catch (EntityLoadingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            Princess botClient2 = Princess.createPrincess("PhilCapet", "localhost",
+                2346, new BehaviorSettings());
+            botClient2.connect();
+
+            MechSummary ms1 = mscInstance.getMech("Rifleman RFL-3N");
+            try {
+                Entity e = new MechFileParser(ms1.getSourceFile(), ms1.getEntryName()).getEntity();
+                //autoSetSkillsAndName(e, client.getLocalPlayer());
+
+                botClient2.getSkillGenerator().setRandomSkills(e, false);
+                e.getCrew().setGunnery(4, 0);
+                e.getCrew().setGunneryL(4, 0);
+                e.getCrew().setGunneryM(4, 0);
+                e.getCrew().setGunneryB(4, 0);
+                e.getCrew().setPiloting(5, 0);
+                e.getCrew().setGender(Gender.MALE, 0);
+                e.getCrew().setName("Philip Capet", 0);
+                e.setOwner(botClient2.getLocalPlayer());
+
+                botClient2.sendAddEntity(e);
+            } catch (EntityLoadingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            botClient.sendDone(true);
+            botClient2.sendDone(true);
+            //initializeSuiteGraphicalSetups(MMConstants.PROJECT_NAME);
+
+            /*
             if (parser.host()) {
                 startHost(restArgs);
                 return;
@@ -107,6 +180,7 @@ public class MegaMek {
             } else {
                 startGUI();
             }
+            */
         } catch (MegaMekCommandLineParser.ParseException e) {
             LogManager.getLogger().fatal("Incorrect arguments:" + e.getMessage() + '\n' + parser.help());
             System.exit(1);

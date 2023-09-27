@@ -303,7 +303,8 @@ public class GameManager implements IGameManager {
             Server.getServerInstance().getEmailService().reset();
         }
 
-        changePhase(GamePhase.LOUNGE);
+        Server.getServerInstance().die();
+        //changePhase(GamePhase.LOUNGE);
     }
 
     @Override
