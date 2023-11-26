@@ -27,6 +27,7 @@ import megamek.client.ui.swing.MegaMekGUI;
 import megamek.client.ui.swing.tooltip.PilotToolTip;
 import megamek.common.MechSummaryCache;
 import megamek.common.Entity;
+import megamek.common.Board;
 import megamek.common.MechFileParser;
 import megamek.common.MechSummary;
 import megamek.common.annotations.Nullable;
@@ -89,6 +90,8 @@ public class MegaMek {
         MegaMekCommandLineParser parser = new MegaMekCommandLineParser(args);
 
         try {
+            System.out.println("Working Directory = " + System.getProperty("user.dir"));
+
             // Parse the command line arguments and deal with them, if they are about data export or help
             parser.parse();
 
@@ -107,6 +110,11 @@ public class MegaMek {
             Princess botClient = Princess.createPrincess("JustinXiang", "localhost",
                 2346, new BehaviorSettings());
             botClient.connect();
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+
+            }
 
             MechSummaryCache mscInstance = MechSummaryCache.getInstance();
             MechSummary ms = mscInstance.getMech("Centurion CN9-YLW 'Yen Lo Wang'");
@@ -115,6 +123,7 @@ public class MegaMek {
                 //autoSetSkillsAndName(e, client.getLocalPlayer());
 
                 botClient.getSkillGenerator().setRandomSkills(e, false);
+                e.setStartingPos(Board.START_E);
                 e.getCrew().setGunnery(4, 0);
                 e.getCrew().setGunneryL(4, 0);
                 e.getCrew().setGunneryM(4, 0);
@@ -133,6 +142,11 @@ public class MegaMek {
             Princess botClient2 = Princess.createPrincess("PhilCapet", "localhost",
                 2346, new BehaviorSettings());
             botClient2.connect();
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+
+            }
 
             MechSummary ms1 = mscInstance.getMech("Rifleman RFL-3N");
             try {
@@ -140,6 +154,7 @@ public class MegaMek {
                 //autoSetSkillsAndName(e, client.getLocalPlayer());
 
                 botClient2.getSkillGenerator().setRandomSkills(e, false);
+                e.setStartingPos(Board.START_W);
                 e.getCrew().setGunnery(4, 0);
                 e.getCrew().setGunneryL(4, 0);
                 e.getCrew().setGunneryM(4, 0);
@@ -153,6 +168,12 @@ public class MegaMek {
             } catch (EntityLoadingException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+
             }
 
             botClient.sendDone(true);

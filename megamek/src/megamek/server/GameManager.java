@@ -91,7 +91,7 @@ public class GameManager implements IGameManager {
         }
     }
 
-    private static final String DEFAULT_BOARD = MapSettings.BOARD_GENERATED;
+    private static final String DEFAULT_BOARD = "/solaris/Colosseum01-15x15";
 
     private Game game = new Game();
 
@@ -154,6 +154,7 @@ public class GameManager implements IGameManager {
         game.setPhase(GamePhase.LOUNGE);
         MapSettings mapSettings = game.getMapSettings();
         mapSettings.setBoardsAvailableVector(ServerBoardHelper.scanForBoards(mapSettings));
+
         mapSettings.setNullBoards(DEFAULT_BOARD);
 
         // register terrain processors

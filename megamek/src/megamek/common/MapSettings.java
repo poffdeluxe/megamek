@@ -439,10 +439,10 @@ public class MapSettings implements Serializable {
 
     /** Creates new MapSettings */
     private MapSettings() {
-        this(megamek.common.preference.PreferenceManager.getClientPreferences().getBoardWidth(),
-                megamek.common.preference.PreferenceManager.getClientPreferences().getBoardHeight(),
-                megamek.common.preference.PreferenceManager.getClientPreferences().getMapWidth(),
-                megamek.common.preference.PreferenceManager.getClientPreferences().getMapHeight());
+        this(15,
+                15,
+                1,
+                1);
     }
 
     /** Create new MapSettings with all size settings specified */
